@@ -6,6 +6,7 @@ from io import BytesIO
 import pytesseract
 import cv2
 import numpy as np
+from rgb import extract_black_region
 
 def getCode(image_path):
     nume = 0
@@ -42,27 +43,31 @@ def getCode(image_path):
 
             # Save or display the cropped image
             cropped_img.save("/Users/bibekdhakal/Python/Bot/cropped_image.jpg")
-
-            img = cv2.imread("/Users/bibekdhakal/Python/Bot/cropped_image.jpg")
+            image_path = "/Users/bibekdhakal/Python/Bot/cropped_image.jpg"
+            extract_black_region(image_path)
+            time.sleep(5)
+            extract_black_region('/Users/bibekdhakal/Python/Bot/rgb_image.jpg')
+            img = cv2.imread("/Users/bibekdhakal/Python/Bot/rgb_image.jpg")
             # Convert image to grayscale
             
             # img = cv2.imread(file)
-            gamma = 1.4
-            exposure_corrected = np.clip(img ** gamma, 0, 255).astype(np.uint8)
+            # gamma = 1.4
+            # exposure_corrected = np.clip(img ** gamma, 0, 255).astype(np.uint8)
 
-            # Enhance the shadows using histogram equalization
-            gray = cv2.cvtColor(exposure_corrected, cv2.COLOR_BGR2GRAY)
-            equalized = cv2.equalizeHist(gray)
+            # # Enhance the shadows using histogram equalization
+            # gray = cv2.cvtColor(exposure_corrected, cv2.COLOR_BGR2GRAY)
+            # equalized = cv2.equalizeHist(gray)
 
-            # Stack the equalized image with the original exposure-corrected image
-            enhanced_img = cv2.merge((equalized, equalized, equalized))
+            # # Stack the equalized image with the original exposure-corrected image
+            # img = cv2.merge((equalized, equalized, equalized))
 
             # Display the enhanced image
-            cv2.imshow("Enhanced Image", enhanced_img)
+            cv2.imshow("Enhanced Image", img)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
             cv2.destroyAllWindows()
-            text = pytesseract.image_to_string(enhanced_img)
+            text = pytesseract.image_to_string(img)
+            print(text)
             nume = ''.join(x for x in text if x.isdigit())
             print(nume)
            
@@ -75,3 +80,5 @@ def getCode(image_path):
     
 # code = getCode('/Users/bibekdhakal/Python/Bot/div_screenshot.png')
 # print(code)
+
+getCode('/Users/bibekdhakal/Python/Bot/div_screenshot.png')
